@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ziyu Chen — Product Manager</title>
+<meta name="description" content="Ziyu Chen — Product Operations & Product Manager. M.Sc. candidate at UESTC. Previously at Trip.com Group.">
+<style>
+  :root {
+    --ink: #222;
+    --soft: #555;
+    --faint: #999;
+    --line: #e4e1dc;
+    --link: #0057b8;
+    --accent: #b4552d;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", sans-serif;
+    color: var(--ink);
+    background: #faf9f6;
+    line-height: 1.65;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--link); text-decoration: none; }
+  a:hover { color: var(--accent); text-decoration: underline; }
+
+  .page {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 48px 32px 64px;
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 48px;
+  }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar h1 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 30px;
+    font-weight: 600;
+    letter-spacing: .01em;
+    margin-bottom: 6px;
+  }
+  .sidebar h1::after { content: "."; color: var(--accent); }
+  .sidebar .title { color: var(--soft); font-size: 14px; margin-bottom: 2px; }
+  .sidebar .affil { color: var(--faint); font-size: 13px; margin-bottom: 22px; }
+  .sidebar .links { list-style: none; border-top: 2px solid var(--accent); padding-top: 16px; }
+  .sidebar .links li { margin-bottom: 7px; font-size: 14px; }
+  .sidebar .links li::before { content: "›"; color: var(--accent); margin-right: 8px; }
+  .sidebar .note { margin-top: 22px; font-size: 12.5px; color: var(--faint); line-height: 1.6; }
+
+  /* ---------- Main ---------- */
+  h2 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 21px;
+    font-weight: 600;
+    margin: 34px 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+  }
+  h2::after {
+    content: "";
+    position: absolute; left: 0; bottom: -1px;
+    width: 44px; height: 2px;
+    background: var(--accent);
+  }
+  h2:first-child { margin-top: 0; }
+  p.bio { color: var(--ink); margin-bottom: 12px; }
+  p.bio b { font-weight: 600; }
+
+  ul.news { list-style: none; }
+  ul.news li { margin-bottom: 7px; padding-left: 2px; }
+  ul.news .date { color: var(--accent); font-size: 13.5px; margin-right: 6px; font-weight: 500; }
+
+  .work { margin-bottom: 18px; }
+  .work .head { font-weight: 600; font-size: 15px; }
+  .work .head .role { font-weight: 400; color: var(--soft); }
+  .work .head .when { float: right; font-weight: 400; color: var(--faint); font-size: 13.5px; }
+  .work .desc { color: var(--soft); font-size: 14px; margin-top: 3px; }
+  .work .desc b { color: var(--ink); font-weight: 600; }
+  .work .desc .m { color: var(--accent); font-weight: 600; }
+
+  ul.plain { list-style: none; }
+  ul.plain li { margin-bottom: 6px; padding-left: 16px; position: relative; color: var(--soft); font-size: 14px; }
+  ul.plain li::before { content: "·"; position: absolute; left: 2px; color: var(--accent); font-weight: 700; }
+  ul.plain li b { color: var(--ink); }
+
+  footer {
+    grid-column: 1 / -1;
+    border-top: 1px solid var(--line);
+    margin-top: 20px; padding-top: 16px;
+    font-size: 12.5px; color: var(--faint);
+    display: flex; justify-content: space-between;
+  }
+
+  @media (max-width: 720px) {
+    .page { grid-template-columns: 1fr; gap: 12px; padding: 32px 22px 48px; }
+    .sidebar .links { border-top: none; padding-top: 10px; }
+    .work .head .when { float: none; display: block; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <aside class="sidebar">
+    <h1>Ziyu Chen</h1>
+    <div class="title">Product Operations / Product Manager</div>
+    <div class="affil">M.Sc. candidate, UESTC<br>Previously Trip.com Group</div>
+    <ul class="links">
+      <li><a href="mailto:chenziyu089@163.com">Email</a></li>
+      <li><a href="Ziyu_Chen_CV.pdf">CV (PDF)</a></li>
+      <li><a href="tel:+8618582894157">+86 185 8289 4157</a></li>
+    </ul>
+    <div class="note">Open to product manager &amp; product operations roles — internships and full-time, class of 2027.</div>
+  </aside>
+
+  <main>
+    <h2>Biography</h2>
+    <p class="bio">
+      I am a Master's student in Economics &amp; Management at the University of Electronic Science and Technology of China (UESTC), where I ranked <b>1st</b> in the national entrance examination as a cross-disciplinary candidate. My research interest is data governance, and I co-authored <b>FedLing</b>, accepted to <b>EMNLP 2026 Findings</b>.
+    </p>
+    <p class="bio">
+      Previously, I was a Product Operations Intern at <b>Trip.com Group</b> (Shanghai HQ, Overseas Business Unit), where I worked on Google-channel travel products — translating platform requirements into shipped features, governing cross-platform data quality, and lifting content exposure by <b>11%</b> and channel conversion by <b>3%</b>. Before that, I interned in marketing at Chengdu China International Travel Service, growing a user community by <b>14k</b> members in three months.
+    </p>
+    <p class="bio">
+      I enjoy turning ambiguous business problems into clear requirements, metrics and shipped outcomes.
+    </p>
+
+    <h2>News</h2>
+    <ul class="news">
+      <li><span class="date">[2026.08]</span> Our paper <b>FedLing</b> was accepted to <b>EMNLP 2026 Findings</b>.</li>
+      <li><span class="date">[2026.09]</span> Personal site launched at <a href="https://ziyuchen.me">ziyuchen.me</a>.</li>
+      <li><span class="date">[2025]</span> Awarded UESTC First-Class School Scholarship.</li>
+      <li><span class="date">[2024.09]</span> Started M.Sc. at UESTC, ranked 1st in the entrance examination.</li>
+    </ul>
+
+    <h2>Experience</h2>
+
+    <div class="work">
+      <div class="head">Trip.com Group · Shanghai HQ <span class="role">— Product Operations Intern, Overseas Business Unit</span><span class="when">2024.05 — 2024.09</span></div>
+      <div class="desc">
+        Owned the Google channel for overseas attraction products. Translated Google platform requirements into feature scopes, data definitions and acceptance criteria; shipped 2 features on schedule (multi-day pass support, Google Discover content integration), lifting content exposure by <span class="m">11%</span>. Ran funnel analysis on Google Trends / Search Console data, surfacing <span class="m">3+</span> growth opportunities monthly and raising target-page conversion by <span class="m">~6%</span>. Led data governance across <span class="m">20+</span> fields and first-time onboarding of <span class="m">55</span> high-potential attractions (Tokyo Disneyland, Colosseum); delivered <span class="m">183%</span> of monthly listing targets with zero major data errors; closed <span class="m">60+</span> cross-team issues within 12 hours each.
+      </div>
+    </div>
+
+    <div class="work">
+      <div class="head">Chengdu China International Travel Service <span class="role">— Marketing Intern</span><span class="when">2023.09 — 2024.02</span></div>
+      <div class="desc">
+        Designed WeChat campaigns for new-product launch and community growth, reviewed through a reach–join–consult funnel: <span class="m">15,000+</span> reach, <span class="m">200+</span> inquiries, <span class="m">235</span> day-one signups (<span class="m">117%</span> of target); community grew by nearly <span class="m">14k</span> members in 3 months. Independently closed <span class="m">16</span> customized travel orders end-to-end.
+      </div>
+    </div>
+
+    <h2>Publication</h2>
+    <div class="work">
+      <div class="head"><a href="#">FedLing: Linguistic-Structure-Aware Federated Learning for Fair Multilingual LLM Adaptation</a><span class="when">EMNLP 2026 Findings</span></div>
+      <div class="desc">
+        A typology-aware federated learning framework that routes LoRA update subspaces across <span class="m">40 languages</span>, improving low-resource multilingual adaptation while reducing upload cost. I contributed experimental data analysis, robustness studies and communication-cost accounting.
+      </div>
+    </div>
+
+    <h2>Honors &amp; Awards</h2>
+    <ul class="plain">
+      <li>Ranked <b>1st</b> in the national postgraduate entrance examination (cross-disciplinary), UESTC, 2024</li>
+      <li>First-Class &amp; Second-Class School Scholarships, UESTC</li>
+      <li>"Outstanding Officer" of the Graduate Student Union, UESTC</li>
+      <li>First Prize (individual), Shanghai "Starlight Plan" Skills Competition</li>
+      <li>University scholarship (1×) and school scholarships (2×), Shanghai Normal University</li>
+    </ul>
+
+    <h2>Leadership</h2>
+    <ul class="plain">
+      <li><b>Graduate Student Union officer</b>, UESTC — organized 4 university-level events serving 2,000+ graduate students</li>
+      <li><b>Student Union Presidium member</b>, Shanghai Normal University — led 7 university-level cultural events covering 5,000+ attendees</li>
+      <li><b>Class Youth League Secretary</b> (4 years) — organized 13 themed events and 17 study sessions</li>
+    </ul>
+
+    <h2>Skills</h2>
+    <ul class="plain">
+      <li><b>Data &amp; Analytics:</b> SQL, Python (Pandas), Excel, Google Analytics, Google Trends, Search Console</li>
+      <li><b>Product Design:</b> Axure, Figma, Modao, Lanhu, XMind, Photoshop — requirements, flows, prototypes &amp; PRDs</li>
+      <li><b>Product Methods:</b> competitive analysis, user personas, A/B testing, data-driven iteration</li>
+      <li><b>Collaboration:</b> JIRA, Confluence, TAPD, Lark, Agile / Scrum</li>
+      <li><b>AI Tooling:</b> Claude Code, Codex and other AI agents for analysis, rapid prototyping and data processing</li>
+      <li><b>Languages &amp; Certificates:</b> Mandarin (native), English (CET-6); National Tour Guide License; Computer Level 1</li>
+    </ul>
+
+    <footer>
+      <span>© 2026 Ziyu Chen</span>
+      <span>Last updated: Sep 2026</span>
+    </footer>
+  </main>
+
+</div>
+</body>
+</html>
