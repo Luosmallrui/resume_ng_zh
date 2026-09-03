@@ -1,0 +1,130 @@
+% !TeX TS-program = xelatex
+\documentclass[zihao=-4,autoindent=2em]{ctexart}
+
+\usepackage{geometry}
+\geometry{a4paper,left=2.2cm,right=2.2cm,top=2.4cm,bottom=2.4cm}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage[colorlinks=false,hidelinks]{hyperref}
+
+\definecolor{accent}{RGB}{180,85,45}
+
+\titleformat{\section}{\Large\heiti\color{accent}}{\thesection}{0.6em}{}[{\color{accent}\titlerule[0.8pt]}]
+\titleformat{\subsection}{\large\heiti}{\thesubsection}{0.6em}{}
+\titlespacing{\section}{0pt}{1.2em}{0.6em}
+\titlespacing{\subsection}{0pt}{0.8em}{0.3em}
+
+\setlist{itemsep=2pt,topsep=3pt,parsep=0pt}
+
+\linespread{1.25}
+
+\title{\heiti\Huge 面试可能会被问的问题？}
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+\vspace{-1em}
+
+\noindent\textbf{使用说明：}每题按「考察点 + 回答思路」组织，回答思路结合你的真实经历（携程海外业务部、旅行社、研究生会、EMNLP 论文）。加粗的数字和事实必须背熟，面试官会追问数据来源。
+
+\section{自我介绍}
+
+\subsection{请用 1—2 分钟做个自我介绍}
+\textbf{考察点：}表达能力、信息筛选、与岗位的匹配度。
+
+\textbf{回答结构：}学校专业（一句话带过）→ 携程实习（核心，讲职责 + 最强数字）→ 能力关键词收尾。
+参考话术：电子科大经管硕士，跨专业考研专业第一；在携程海外业务部做产品运营实习，负责 Google 渠道的景点产品上架与优化，推动 2 个功能上线，曝光量提升 \textbf{11\%}，月均交付目标达成 \textbf{183\%}；擅长数据分析（SQL/Python）和跨部门协作，实习期间对接 \textbf{60+} 业务方。求职方向是产品经理/产品运营。
+
+\subsection{你为什么想做产品经理？}
+\textbf{要点：}用经历证明而不是喊口号——携程实习中发现"把模糊需求变成清晰方案并推动上线"最有成就感；经管背景 + 数据技能 + 用户运营经验的组合适合产品岗。避免说"产品经理不写代码门槛低"这类减分答案。
+
+\section{简历深挖（必考）}
+
+\subsection{讲讲携程实习中你做的最重要的一件事}
+\textbf{要点：}用 STAR 讲「Google 渠道产品能力建设」。Situation：Google 平台规则与国内业务差异大，需求零散；Task：作为接口人把平台需求转成可执行项目；Action：拆解为功能范围、字段口径、展示规则、验收项；Result：2 个需求按期上线，曝光量 +\textbf{11\%}。
+
+\subsection{曝光量提升 11\% 是怎么归因的？}
+\textbf{要点：}面试官在测你是否真的懂数据。回答框架：上线前后对比同口径数据（Google Discover 渠道曝光量），说明时间窗口、是否排除季节因素、是否有其他同期改动。坦诚口径局限（"无法做严格 A/B，是上线前后环比"）比强行邀功更加分。
+
+\subsection{转化率提升 6\% / 跳出率下降 6\%，你具体做了什么？}
+\textbf{要点：}页面展示优化建议（如热门景点页面视频展示）→ 你基于竞品监测和用户反馈提出建议 → 产品/研发实现 → 你的角色是"提出并推动"，不要说成"我做的"。
+
+\subsection{183\% 的目标达成率，目标是怎么定的？}
+\textbf{要点：}月均 30 个挂接/优化任务是团队基线目标；你完成了 55 个高潜景点的首次挂接 + 日常优化，合计超出目标 83\%。准备解释"为什么能超额"：字段核验规则标准化后效率提升。
+
+\subsection{20+ 个字段的映射与核验规则具体是什么？}
+\textbf{要点：}举例：名称、价格、库存、开放时间、退改政策；讲一个具体的数据不一致案例（如库存同步延迟、退改政策字段口径差异）以及你怎么发现并推动解决的。
+
+\subsection{你怎么判断需求的优先级？}
+\textbf{要点：}用实习里的真实逻辑回答——影响范围（多少用户/订单受影响）× 紧急程度（是否阻断交易）；方法论上提 RICE 或 KANO，说明你实际用的是简化版（影响面 + 紧急度分级，2 小时响应 / 8 小时方案）。
+
+\subsection{实习中遇到过最大的困难/冲突是什么？}
+\textbf{要点：}建议讲"API 接口异常导致用户预订成功但未收到确认"这类跨部门问题：Google 侧、技术侧、供应商三方信息不一致，你如何拉齐信息、推动 \textbf{12 小时}闭环。强调"先安抚用户、再定位责任、最后沉淀规则"。
+
+\subsection{你的 EMNLP 论文是做什么的？你在其中做了什么？}
+\textbf{要点：}一句话版："研究多语言大模型在联邦学习下怎么避免语言间互相干扰，让低资源语言也能受益"。你的贡献：实验数据分析、鲁棒性验证、通信开销核算、审稿回复。产品岗问这个是在测你的技术理解力，结尾补一句"这段经历让我和大模型研发团队的沟通没有障碍"。
+
+\section{产品思维题}
+
+\subsection{说一个你最喜欢的产品，怎么改进它？}
+\textbf{要点：}提前准备 1—2 个。建议选携程/飞猪（你有行业认知）或 Notion/飞书（你有使用深度）。结构：喜欢的原因（解决了什么问题）→ 一个具体的改进点（有数据或用户反馈支撑）→ 怎么验证改进有效（指标）。
+
+\subsection{怎么做竞品分析？}
+\textbf{要点：}用你实习的真实方法：定竞品（Booking、GetYourGuide）→ 定维度（功能、内容展示、用户服务）→ 工具（Google Trends、Search Console）→ 产出（简报 → 优化建议 → 调研立项，如"组合票务""多语种智能客服"）。
+
+\subsection{如果某核心指标（如 DAU/转化率）突然下降 20\%，你怎么排查？}
+\textbf{要点：}分层拆解框架：先确认数据真实性（埋点/口径变化）→ 按渠道、地区、版本、用户分层下钻 → 定位到具体环节（漏斗哪一步掉了）→ 内部（发版 bug）与外部（季节、竞品动作、平台规则变化）假设验证。结合你"月度识别异常"的经验讲。
+
+\subsection{怎么设计一个 A/B 测试？}
+\textbf{要点：}假设 → 单一变量 → 样本量与分组随机 → 核心指标 + 护栏指标 → 统计显著性 → 决策。可以坦承实习中更多是上线前后对比，但理解 A/B 的严谨做法。
+
+\subsection{如何理解"用户画像"？举例。}
+\textbf{要点：}用旅行社经历：按出行时间、预算、目的地、同行人群分层 → 不同分层匹配不同产品和沟通策略 → \textbf{16 单}定制转化。
+
+\section{数据分析题}
+
+\subsection{手写 SQL：查每个景点近 30 天的订单量和转化率}
+\textbf{要点：}必考。准备 \texttt{SELECT ... FROM orders JOIN attractions ... WHERE date >= ... GROUP BY attraction\_id}，注意转化率 = 订单数/访问数需要 join 两张表或子查询。再准备：\texttt{ROW\_NUMBER()} 窗口函数取每个品类 Top N、\texttt{LEFT JOIN} 与 \texttt{JOIN} 的区别。
+
+\subsection{Excel/SQL 之外你怎么做数据分析？}
+\textbf{要点：}Python（Pandas）清洗和聚合、Google Analytics / Search Console 看流量与转化；强调"工具是手段，结论和业务动作才是产出"。
+
+\section{行为与协作题}
+
+\subsection{和研发意见不一致怎么办？}
+\textbf{要点：}先确认分歧是目标不一致还是方案不一致；用数据和用户影响对齐目标；方案层面尊重研发的技术判断，必要时降级 MVP 先验证。举实习中协调 Google/技术/供应商三方的例子。
+
+\subsection{同时推进多个项目怎么管理？}
+\textbf{要点：}结合 PMO 式回答：排期、里程碑、风险前置沟通；实习中功能优化 + 产品挂接 + 竞品简报并行，用周报复盘节奏。
+
+\subsection{讲讲你组织的大型活动（研究生会/学生会经历）}
+\textbf{要点：}考察组织协调能力。选"研究生青春风采大赛"或"文化交流月"：筹备周期、分工、突发状况处理、最终覆盖人数（\textbf{2,000+} / \textbf{5,000+}）。收尾拉到产品岗："本质是项目管理：目标、排期、干系人、复盘。"
+
+\section{AI 与行业认知}
+
+\subsection{你怎么用 Claude Code / Codex 这类工具？}
+\textbf{要点：}技能栏写了必被问。准备 1—2 个真实场景：用 AI 辅助写数据处理脚本、快速生成原型页面、整理竞品信息。强调"AI 提升效率，但产出由我负责校验"。
+
+\subsection{你怎么看 AI 对旅游/电商产品的影响？}
+\textbf{要点：}结合实习谈：多语种智能客服、内容自动生成与个性化推荐是你实习中真实接触过的方向；观点是"AI 先改造客服和内容生产环节，再逐步进入交易决策环节"。
+
+\section{外企英语面试准备}
+
+准备以下三段，背到脱口而出：
+\begin{itemize}
+  \item \textbf{Self-intro（60s）：}name, UESTC master's, Trip.com internship, key numbers (11\% exposure, 183\% of target, 60+ stakeholders).
+  \item \textbf{Project story（90s）：}the Google-channel onboarding project in STAR format.
+  \item \textbf{Why product / why us（30s）：}tailor to the company.
+\end{itemize}
+
+\section{反问面试官（最后一问）}
+
+准备 2 个，体现思考深度：
+\begin{itemize}
+  \item 团队目前最核心的业务指标是什么？这个岗位入职 3 个月内最希望解决什么问题？
+  \item 团队的产品迭代节奏和协作方式是怎样的（双周迭代？OKR？）？
+\end{itemize}
+避免问薪资福利加班（谈 offer 阶段再说）。
+
+\end{document}
