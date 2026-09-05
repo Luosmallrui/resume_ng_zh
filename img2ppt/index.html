@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>图转 PPT · 图片转可编辑 PPT</title>
+<style>
+  /* ===== 基础样式：简洁现代，移动端可用 ===== */
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 0 12px 48px;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    background: #f1f5f9; color: #1e293b;
+  }
+  header { max-width: 880px; margin: 0 auto; padding: 28px 4px 12px; }
+  header h1 { margin: 0; font-size: 26px; }
+  header h1 .logo { color: #2563eb; }
+  header p { margin: 6px 0 0; color: #64748b; font-size: 14px; }
+  main { max-width: 880px; margin: 0 auto; }
+  .card {
+    background: #fff; border: 1px solid #e2e8f0; border-radius: 14px;
+    padding: 18px; margin-top: 16px; box-shadow: 0 1px 3px rgba(15,23,42,.05);
+  }
+  .hidden { display: none !important; }
+  summary { cursor: pointer; font-weight: 600; font-size: 15px; }
+  .hint { font-size: 12px; color: #94a3b8; margin-top: 8px; line-height: 1.6; }
+  label.field { display: block; margin-top: 12px; font-size: 13px; color: #475569; }
+  input[type=text], input[type=password] {
+    width: 100%; margin-top: 4px; padding: 9px 10px; font-size: 14px;
+    border: 1px solid #cbd5e1; border-radius: 8px; outline: none;
+  }
+  input:focus { border-color: #2563eb; }
+  .mock-row { margin-top: 14px; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+  /* 上传区 */
+  #dropZone {
+    border: 2px dashed #cbd5e1; border-radius: 12px; padding: 26px 12px;
+    text-align: center; color: #64748b; font-size: 14px; cursor: pointer;
+    transition: border-color .15s, background .15s;
+  }
+  #dropZone.dragover { border-color: #2563eb; background: #eff6ff; }
+  #dropZone img { max-width: 100%; max-height: 240px; border-radius: 8px; margin-top: 12px; display: block; margin-left: auto; margin-right: auto; }
+  /* 类型选择 */
+  .type-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .type-row label {
+    border: 1px solid #cbd5e1; border-radius: 999px; padding: 7px 16px;
+    font-size: 14px; cursor: pointer; user-select: none;
+  }
+  .type-row input { display: none; }
+  .type-row label.checked { background: #2563eb; border-color: #2563eb; color: #fff; }
+  /* 按钮与状态 */
+  .btn {
+    margin-top: 16px; padding: 11px 22px; font-size: 15px; border: none; border-radius: 10px;
+    background: #2563eb; color: #fff; cursor: pointer; font-weight: 600;
+  }
+  .btn:disabled { background: #93c5fd; cursor: not-allowed; }
+  .btn.secondary { background: #0f766e; }
+  #statusBox { margin-top: 12px; font-size: 13px; min-height: 18px; }
+  #statusBox.err { color: #dc2626; white-space: pre-wrap; }
+  #statusBox.info { color: #2563eb; }
+  .spinner {
+    display: inline-block; width: 13px; height: 13px; border: 2px solid #bfdbfe;
+    border-top-color: #2563eb; border-radius: 50%; animation: spin .8s linear infinite;
+    vertical-align: -2px; margin-right: 6px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  /* 结果区 */
+  #jsonDetails { margin-top: 4px; }
+  #jsonPre {
+    background: #0f172a; color: #e2e8f0; font-size: 12px; padding: 12px;
+    border-radius: 8px; overflow: auto; max-height: 260px;
+  }
+  #svgBox { margin-top: 14px; overflow-x: auto; }
+  #svgBox svg { max-width: 100%; height: auto; border: 1px solid #e2e8f0; border-radius: 10px; background: #fff; }
+  .title-ed {
+    font-size: 17px; font-weight: 700; text-align: center; padding: 8px;
+    outline: none; border-radius: 8px; cursor: text;
+  }
+  .title-ed:focus { background: #eff6ff; }
+  /* SVG 内可编辑文本（foreignObject） */
+  .ed {
+    font-size: 12px; color: #334155; text-align: center; overflow: hidden;
+    width: 100%; height: 100%; outline: none; cursor: text; line-height: 1.3;
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    display: flex; align-items: center; justify-content: center; word-break: break-all;
+  }
+  .ed.left { justify-content: flex-start; text-align: left; }
+  .ed:focus { background: rgba(37,99,235,.12); border-radius: 4px; }
+  #rawBox { margin-top: 14px; }
+  #rawPre {
+    background: #fff7ed; border: 1px solid #fed7aa; color: #7c2d12;
+    padding: 12px; border-radius: 8px; font-size: 12px; white-space: pre-wrap; max-height: 300px; overflow: auto;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1><span class="logo">图转 PPT</span></h1>
+  <p>上传表格 / 数据图表 / 流程图图片，AI 解析为结构化数据，一键导出可编辑 PPTX。</p>
+</header>
+<main>
+  <!-- ===== API 设置（可折叠，BYOK 模式） ===== -->
+  <details class="card" id="apiCard" open>
+    <summary>API 设置</summary>
+    <label class="field">Base URL
+      <input type="text" id="baseUrl" value="https://dashscope.aliyuncs.com/compatible-mode/v1">
+    </label>
+    <label class="field">API Key
+      <input type="password" id="apiKey" placeholder="sk-..." autocomplete="off">
+    </label>
+    <label class="field">模型名
+      <input type="text" id="modelName" value="qwen-vl-max">
+    </label>
+    <label class="mock-row"><input type="checkbox" id="mockMode"> 使用模拟数据测试（不调用 API）</label>
+    <p class="hint">Key 仅保存在本地浏览器（localStorage），直接发送到模型服务商，不经过任何第三方。</p>
+  </details>
+
+  <!-- ===== 上传与转换 ===== -->
+  <section class="card">
+    <div id="dropZone">
+      <div id="dropText">点击选择或拖拽图片到这里（表格照片 / 数据图表 / 流程图）</div>
+      <img id="previewImg" class="hidden" alt="图片预览">
+    </div>
+    <input type="file" id="fileInput" accept="image/*" class="hidden">
+    <div class="type-row" id="typeRow">
+      <label class="checked"><input type="radio" name="itype" value="auto" checked>自动判断</label>
+      <label><input type="radio" name="itype" value="table">表格</label>
+      <label><input type="radio" name="itype" value="chart">数据图表</label>
+      <label><input type="radio" name="itype" value="flow">流程图</label>
+    </div>
+    <button class="btn" id="convertBtn">开始转换</button>
+    <div id="statusBox"></div>
+  </section>
+
+  <!-- ===== 结果区 ===== -->
+  <section class="card hidden" id="resultCard">
+    <details id="jsonDetails">
+      <summary>结构化 JSON</summary>
+      <pre id="jsonPre"></pre>
+    </details>
+    <div id="svgBox"></div>
+    <div id="rawBox" class="hidden">
+      <p class="hint">模型未返回有效 JSON，以下为原始输出，可重试或手动指定类型：</p>
+      <pre id="rawPre"></pre>
+    </div>
+    <button class="btn secondary" id="exportBtn">导出 PPTX</button>
+    <p class="hint">提示：标题及图表中的文字可直接点击修改，修改会同步到导出结果。</p>
+  </section>
+</main>
+
+<!-- PptxGenJS：用于生成原生可编辑的 PPTX -->
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+<script>
+'use strict';
+/* =====================================================================
+ * 图转 PPT —— 纯前端单文件应用
+ * 纯函数部分（提示词 / Mock 数据 / JSON 提取 / 数据校验 / SVG 渲染）
+ * 与 DOM 逻辑分离，便于在 Node 中做 sanity check。
+ * ===================================================================== */
+
+/* ---------- 常量：Mock 数据 ---------- */
+var MOCK = {
+  table: {
+    type: 'table', title: '2024 年各季度销售数据（万元）',
+    headers: ['季度', '销售额', '成本', '利润'],
+    rows: [
+      ['Q1', '1200', '800', '400'],
+      ['Q2', '1500', '950', '550'],
+      ['Q3', '1350', '870', '480'],
+      ['Q4', '1800', '1100', '700']
+    ]
+  },
+  chart: {
+    type: 'chart', title: '近三年用户增长趋势', chartType: 'bar',
+    categories: ['2022', '2023', '2024'],
+    series: [
+      { name: '注册用户（万）', values: [120, 260, 480] },
+      { name: '活跃用户（万）', values: [60, 150, 320] }
+    ]
+  },
+  flow: {
+    type: 'flow', title: '订单处理流程',
+    nodes: [
+      { id: 'n1', label: '用户下单', x: 15, y: 50 },
+      { id: 'n2', label: '支付校验', x: 40, y: 50 },
+      { id: 'n3', label: '库存检查', x: 65, y: 50 },
+      { id: 'n4', label: '发货', x: 90, y: 25 },
+      { id: 'n5', label: '通知缺货', x: 90, y: 75 }
+    ],
+    edges: [
+      { from: 'n1', to: 'n2', label: '', style: 'solid' },
+      { from: 'n2', to: 'n3', label: '支付成功', style: 'solid' },
+      { from: 'n3', to: 'n4', label: '有货', style: 'solid' },
+      { from: 'n3', to: 'n5', label: '缺货', style: 'dashed' }
+    ]
+  }
+};
+
+/* ---------- 常量：各类型 system prompt（要求严格 JSON 输出） ---------- */
+var PROMPT_COMMON = '你是文档图像解析助手。只输出严格 JSON，不要输出 markdown 代码块、解释或任何其他文字。';
+var TYPE_PROMPTS = {
+  table: PROMPT_COMMON + '\n请把图片中的表格提取为如下 JSON：' +
+    '{"type":"table","title":"表格标题","headers":["列1","列2"],"rows":[["a","b"],["c","d"]]}' +
+    '\n所有单元格用字符串；没有标题时根据内容拟一个简短标题。',
+  chart: PROMPT_COMMON + '\n请把图片中的数据图表提取为如下 JSON：' +
+    '{"type":"chart","title":"图表标题","chartType":"bar|line|pie","categories":["类目1","类目2"],"series":[{"name":"系列名","values":[1,2]}]}' +
+    '\nchartType 只能是 bar、line、pie 之一；values 必须是数字数组，长度与 categories 一致；饼图只保留一个系列。',
+  flow: PROMPT_COMMON + '\n请把图片中的流程图提取为如下 JSON：' +
+    '{"type":"flow","title":"流程图标题","nodes":[{"id":"n1","label":"节点文字","x":50,"y":20}],"edges":[{"from":"n1","to":"n2","label":"连线文字","style":"solid"}]}' +
+    '\nx/y 是节点中心相对画布宽高的百分比（0-100，x 向右 y 向下），按图中相对位置估计；style 只能是 solid 或 dashed（虚线箭头用 dashed）；无文字的连线 label 用空字符串。',
+  auto: PROMPT_COMMON + '\n先判断图片最接近以下哪种类型：表格(table)、数据图表(chart)、流程图(flow)，然后按对应 schema 输出：' +
+    '\n表格: {"type":"table","title":"...","headers":["..."],"rows":[["..."]]}' +
+    '\n数据图表: {"type":"chart","title":"...","chartType":"bar|line|pie","categories":["..."],"series":[{"name":"...","values":[1]}]}' +
+    '\n流程图: {"type":"flow","title":"...","nodes":[{"id":"n1","label":"...","x":50,"y":50}],"edges":[{"from":"n1","to":"n2","label":"...","style":"solid|dashed"}]}' +
+    '\n只输出其中一种；chart 的 values 为数字；flow 的 x/y 为 0-100 的相对坐标百分比。'
+};
+
+/* ---------- 工具函数 ---------- */
+// HTML 转义，防止文本注入破坏 SVG
+function escapeHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+// 深拷贝（Mock 数据用，避免被页面编辑污染）
+function clone(o) { return JSON.parse(JSON.stringify(o)); }
+// 按 "a.0.b" 路径写入对象，用于 contenteditable 反向更新数据
+function setByPath(obj, path, value) {
+  var keys = path.split('.');
+  var cur = obj;
+  for (var i = 0; i < keys.length - 1; i++) {
+    cur = cur[keys[i]];
+    if (cur == null) return;
+  }
+  cur[keys[keys.length - 1]] = value;
+}
+
+/* ---------- 从模型输出中提取 JSON（容错：代码块 / 夹杂文字） ---------- */
+function extractJson(text) {
+  var t = String(text || '').trim();
+  // 去掉 ```json ... ``` 包裹
+  var fence = t.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  if (fence) t = fence[1].trim();
+  try { return JSON.parse(t); } catch (e) { /* 继续尝试截取 */ }
+  // 截取第一个 { 到最后一个 } 之间的内容
+  var i = t.indexOf('{'), j = t.lastIndexOf('}');
+  if (i >= 0 && j > i) {
+    try { return JSON.parse(t.slice(i, j + 1)); } catch (e2) { /* 放弃 */ }
+  }
+  throw new Error('模型输出不是有效 JSON');
+}
+
+/* ---------- 数据校验与规范化：把模型输出整理成稳定结构 ---------- */
+function toNum(v, dflt) { var n = Number(v); return isFinite(n) ? n : dflt; }
+function clampPct(v) { return Math.max(0, Math.min(100, toNum(v, 50))); }
+
+function normalizeData(obj) {
+  if (!obj || typeof obj !== 'object') throw new Error('JSON 不是对象');
+  // 缺少 type 时按字段猜测
+  if (!obj.type) {
+    if (obj.headers && obj.rows) obj.type = 'table';
+    else if (obj.categories && obj.series) obj.type = 'chart';
+    else if (obj.nodes && obj.edges) obj.type = 'flow';
+  }
+  var title = String(obj.title || '未命名');
+  if (obj.type === 'table') {
+    var headers = Array.isArray(obj.headers) ? obj.headers.map(String) : [];
+    if (!headers.length) throw new Error('表格缺少 headers');
+    var rows = Array.isArray(obj.rows) ? obj.rows.map(function (r) {
+      var arr = Array.isArray(r) ? r.map(function (c) { return String(c == null ? '' : c); }) : [];
+      while (arr.length < headers.length) arr.push(''); // 补齐列数
+      return arr.slice(0, headers.length);
+    }) : [];
+    return { type: 'table', title: title, headers: headers, rows: rows };
+  }
+  if (obj.type === 'chart') {
+    var ct = String(obj.chartType || 'bar');
+    if (['bar', 'line', 'pie'].indexOf(ct) < 0) ct = 'bar';
+    var cats = Array.isArray(obj.categories) ? obj.categories.map(String) : [];
+    var series = Array.isArray(obj.series) ? obj.series.map(function (s) {
+      return {
+        name: String((s && s.name) || '系列'),
+        values: (Array.isArray(s && s.values) ? s.values : []).map(function (v) { return toNum(v, 0); })
+      };
+    }).filter(function (s) { return s.values.length; }) : [];
+    if (!cats.length || !series.length) throw new Error('图表缺少 categories 或 series');
+    if (ct === 'pie') series = series.slice(0, 1); // 饼图只用一个系列
+    return { type: 'chart', title: title, chartType: ct, categories: cats, series: series };
+  }
+  if (obj.type === 'flow') {
+    var nodes = Array.isArray(obj.nodes) ? obj.nodes.map(function (n, i) {
+      return {
+        id: String((n && n.id) || ('n' + (i + 1))),
+        label: String((n && n.label) || ('节点' + (i + 1))),
+        x: clampPct(n && n.x), y: clampPct(n && n.y)
+      };
+    }) : [];
+    if (!nodes.length) throw new Error('流程图缺少 nodes');
+    var ids = {};
+    nodes.forEach(function (n) { ids[n.id] = true; });
+    var edges = Array.isArray(obj.edges) ? obj.edges.filter(function (e) {
+      return e && ids[e.from] && ids[e.to] && e.from !== e.to;
+    }).map(function (e) {
+      return { from: String(e.from), to: String(e.to), label: String(e.label || ''),
+               style: e.style === 'dashed' ? 'dashed' : 'solid' };
+    }) : [];
+    return { type: 'flow', title: title, nodes: nodes, edges: edges };
+  }
+  throw new Error('无法识别的类型: ' + obj.type);
+}
+
+/* ---------- SVG 渲染：把结构化 JSON 画成 SVG 字符串 ---------- */
+var PALETTE = ['#2563eb', '#f59e0b', '#10b981', '#ef4444', '#8b5cf6', '#ec4899'];
+
+// 可编辑文本（foreignObject + contenteditable），data-path 指向数据字段
+function edHtml(x, y, w, h, path, text, extraCls) {
+  return '<foreignObject x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '">' +
+    '<div xmlns="http://www.w3.org/1999/xhtml" class="ed ' + (extraCls || '') +
+    '" contenteditable="true" data-path="' + path + '">' + escapeHtml(text) + '</div></foreignObject>';
+}
+function svgWrap(w, h, inner) {
+  return '<svg viewBox="0 0 ' + w + ' ' + h + '" xmlns="http://www.w3.org/2000/svg" role="img">' + inner + '</svg>';
+}
+// 估算文本宽度（中文按全角计）
+function textW(s) {
+  var w = 0, str = String(s == null ? '' : s);
+  for (var i = 0; i < str.length; i++) w += str.charCodeAt(i) > 255 ? 14 : 8;
+  return w;
+}
+
+// 表格：网格线 + 单元格文字（均可编辑）
+function renderTableSvg(d) {
+  var cols = d.headers.length;
+  var all = [d.headers].concat(d.rows);
+  var widths = [];
+  for (var j = 0; j < cols; j++) {
+    var w = 70;
+    all.forEach(function (r) { w = Math.max(w, textW(r[j]) + 26); });
+    widths.push(Math.min(w, 260));
+  }
+  var rowH = 36, W = widths.reduce(function (a, b) { return a + b; }, 0), H = rowH * all.length;
+  var p = [];
+  // 横竖网格线
+  for (var i = 0; i <= all.length; i++) p.push('<line x1="0" y1="' + i * rowH + '" x2="' + W + '" y2="' + i * rowH + '" stroke="#cbd5e1"/>');
+  var acc = 0;
+  widths.forEach(function (cw) { p.push('<line x1="' + acc + '" y1="0" x2="' + acc + '" y2="' + H + '" stroke="#cbd5e1"/>'); acc += cw; });
+  p.push('<line x1="' + W + '" y1="0" x2="' + W + '" y2="' + H + '" stroke="#cbd5e1"/>');
+  // 表头底色
+  p.push('<rect x="0" y="0" width="' + W + '" height="' + rowH + '" fill="#eff6ff"/>');
+  // 单元格文字
+  all.forEach(function (r, ri) {
+    var x = 0;
+    r.forEach(function (c, ci) {
+      var path = ri === 0 ? 'headers.' + ci : 'rows.' + (ri - 1) + '.' + ci;
+      p.push(edHtml(x + 2, ri * rowH + 2, widths[ci] - 4, rowH - 4, path, c, ri === 0 ? 'bold' : ''));
+      x += widths[ci];
+    });
+  });
+  return svgWrap(W, H, p.join(''));
+}
+
+// 饼图扇形路径
+function pieSlicePath(cx, cy, r, a0, a1) {
+  var x0 = cx + r * Math.cos(a0), y0 = cy + r * Math.sin(a0);
+  var x1 = cx + r * Math.cos(a1), y1 = cy + r * Math.sin(a1);
+  var large = (a1 - a0) > Math.PI ? 1 : 0;
+  return 'M ' + cx + ' ' + cy + ' L ' + x0.toFixed(1) + ' ' + y0.toFixed(1) +
+    ' A ' + r + ' ' + r + ' 0 ' + large + ' 1 ' + x1.toFixed(1) + ' ' + y1.toFixed(1) + ' Z';
+}
+
+// 数据图表：柱状 / 折线 / 饼图示意（系列名、类目名可编辑）
+function renderChartSvg(d) {
+  var W = 680, H = 400, x0 = 56, y0 = 48, x1 = W - 16, y1 = H - 64;
+  var cats = d.categories, series = d.series;
+  var p = [];
+  if (d.chartType !== 'pie') {
+    p.push('<line x1="' + x0 + '" y1="' + y0 + '" x2="' + x0 + '" y2="' + y1 + '" stroke="#94a3b8"/>');
+    p.push('<line x1="' + x0 + '" y1="' + y1 + '" x2="' + x1 + '" y2="' + y1 + '" stroke="#94a3b8"/>');
+    var maxV = 1e-9;
+    series.forEach(function (s) { s.values.forEach(function (v) { maxV = Math.max(maxV, v); }); });
+    var n = cats.length, gw = (x1 - x0) / Math.max(1, n);
+    // 类目标签（可编辑）
+    cats.forEach(function (c, i) {
+      p.push(edHtml(x0 + gw * i, y1 + 6, gw, 22, 'categories.' + i, c, ''));
+    });
+    series.forEach(function (s, si) {
+      var col = PALETTE[si % PALETTE.length];
+      if (d.chartType === 'bar') {
+        var bw = gw / (series.length + 1);
+        s.values.forEach(function (v, i) {
+          var bh = (v / maxV) * (y1 - y0);
+          var bx = x0 + gw * i + bw * (si + 0.5);
+          p.push('<rect x="' + bx.toFixed(1) + '" y="' + (y1 - bh).toFixed(1) + '" width="' + (bw * 0.8).toFixed(1) +
+            '" height="' + bh.toFixed(1) + '" fill="' + col + '" rx="2"/>');
+          p.push('<text x="' + (bx + bw * 0.4).toFixed(1) + '" y="' + (y1 - bh - 5).toFixed(1) +
+            '" font-size="10" fill="#64748b" text-anchor="middle">' + v + '</text>');
+        });
+      } else { // line
+        var pts = s.values.map(function (v, i) {
+          return [x0 + gw * (i + 0.5), y1 - (v / maxV) * (y1 - y0)];
+        });
+        p.push('<polyline points="' + pts.map(function (q) { return q[0].toFixed(1) + ',' + q[1].toFixed(1); }).join(' ') +
+          '" fill="none" stroke="' + col + '" stroke-width="2.5"/>');
+        pts.forEach(function (q) { p.push('<circle cx="' + q[0].toFixed(1) + '" cy="' + q[1].toFixed(1) + '" r="3.5" fill="' + col + '"/>'); });
+      }
+      // 图例：色块 + 可编辑系列名
+      var lx = x0 + si * 160;
+      p.push('<rect x="' + lx + '" y="16" width="10" height="10" fill="' + col + '" rx="2"/>');
+      p.push(edHtml(lx + 14, 10, 140, 22, 'series.' + si + '.name', s.name, 'left'));
+    });
+  } else { // pie：只画第一个系列
+    var s0 = series[0];
+    var total = s0.values.reduce(function (a, b) { return a + Math.max(0, b); }, 0) || 1;
+    var cx = 190, cy = 200, r = 130, a = -Math.PI / 2;
+    s0.values.forEach(function (v, i) {
+      var frac = Math.max(0, v) / total, col = PALETTE[i % PALETTE.length];
+      if (frac >= 0.9999) {
+        p.push('<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="' + col + '"/>');
+      } else if (frac > 0) {
+        var a1 = a + frac * Math.PI * 2;
+        p.push('<path d="' + pieSlicePath(cx, cy, r, a, a1) + '" fill="' + col + '" stroke="#fff" stroke-width="1.5"/>');
+        a = a1;
+      }
+      // 右侧图例：色块 + 可编辑类目名 + 数值
+      var ly = 60 + i * 30;
+      p.push('<rect x="380" y="' + ly + '" width="10" height="10" fill="' + col + '" rx="2"/>');
+      p.push(edHtml(394, ly - 6, 180, 22, 'categories.' + i, cats[i] || ('类目' + (i + 1)), 'left'));
+      p.push('<text x="580" y="' + (ly + 10) + '" font-size="11" fill="#64748b">' + v +
+        '（' + (frac * 100).toFixed(1) + '%）</text>');
+    });
+  }
+  return svgWrap(W, H, p.join(''));
+}
+
+/* 计算连线两端在节点矩形边界上的截断点，避免箭头被节点遮住。
+ * 入参为两节点中心坐标与各自半宽半高，返回 [x1,y1,x2,y2]。 */
+function trimEnds(ax, ay, bx, by, hwA, hhA, hwB, hhB) {
+  var dx = bx - ax, dy = by - ay;
+  var kA = Math.min(dx ? hwA / Math.abs(dx) : Infinity, dy ? hhA / Math.abs(dy) : Infinity, 1);
+  var kB = Math.min(dx ? hwB / Math.abs(dx) : Infinity, dy ? hhB / Math.abs(dy) : Infinity, 1);
+  return [ax + dx * kA, ay + dy * kA, bx - dx * kB, by - dy * kB];
+}
+
+// 流程图：圆角矩形节点（按相对坐标）+ 带箭头连线（实线/虚线）
+function renderFlowSvg(d) {
+  var W = 1000, H = 620, NW = 160, NH = 56, hw = NW / 2, hh = NH / 2;
+  var pos = {};
+  d.nodes.forEach(function (n) {
+    // 相对百分比 → 像素，并限制在画布内
+    pos[n.id] = { x: Math.max(hw + 6, Math.min(W - hw - 6, n.x * W / 100)),
+                  y: Math.max(hh + 6, Math.min(H - hh - 6, n.y * H / 100)) };
+  });
+  var p = ['<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">' +
+    '<path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/></marker></defs>'];
+  // 先画连线（在节点下层）
+  d.edges.forEach(function (e, i) {
+    var a = pos[e.from], b = pos[e.to];
+    var t = trimEnds(a.x, a.y, b.x, b.y, hw, hh, hw, hh);
+    p.push('<line x1="' + t[0].toFixed(1) + '" y1="' + t[1].toFixed(1) + '" x2="' + t[2].toFixed(1) + '" y2="' + t[3].toFixed(1) +
+      '" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"' +
+      (e.style === 'dashed' ? ' stroke-dasharray="7 5"' : '') + '/>');
+    if (e.label) {
+      p.push(edHtml((t[0] + t[2]) / 2 - 60, (t[1] + t[3]) / 2 - 24, 120, 20, 'edges.' + i + '.label', e.label, ''));
+    }
+  });
+  // 再画节点
+  d.nodes.forEach(function (n, i) {
+    var c = pos[n.id];
+    p.push('<rect x="' + (c.x - hw) + '" y="' + (c.y - hh) + '" width="' + NW + '" height="' + NH +
+      '" rx="12" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>');
+    p.push(edHtml(c.x - hw + 6, c.y - hh + 6, NW - 12, NH - 12, 'nodes.' + i + '.label', n.label, ''));
+  });
+  return svgWrap(W, H, p.join(''));
+}
+
+function renderSvg(d) {
+  if (d.type === 'table') return renderTableSvg(d);
+  if (d.type === 'chart') return renderChartSvg(d);
+  return renderFlowSvg(d);
+}
+
+/* ---------- 大模型调用：OpenAI 兼容 chat/completions ---------- */
+async function callModel(cfg, sysPrompt, dataUrl) {
+  var url = cfg.baseUrl.replace(/\/+$/, '') + '/chat/completions';
+  var mkBody = function (withJsonMode) {
+    var body = {
+      model: cfg.model,
+      messages: [
+        { role: 'system', content: sysPrompt },
+        { role: 'user', content: [
+          { type: 'text', text: '请解析这张图片，严格按要求的 schema 输出 JSON。' },
+          { type: 'image_url', image_url: { url: dataUrl } }
+        ] }
+      ]
+    };
+    if (withJsonMode) body.response_format = { type: 'json_object' };
+    return JSON.stringify(body);
+  };
+  var headers = { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + cfg.apiKey };
+  // 注意：浏览器直连受目标接口 CORS 策略限制。
+  // 若 DashScope 浏览器直连被 CORS 拦截，可在 Base URL 处填自建代理地址
+  // （例如用 Cloudflare Workers / Nginx 转发并加 CORS 头）。
+  var resp = await fetch(url, { method: 'POST', headers: headers, body: mkBody(true) });
+  if (!resp.ok) {
+    // 部分服务/模型不支持 response_format，降级为普通文本请求重试一次
+    resp = await fetch(url, { method: 'POST', headers: headers, body: mkBody(false) });
+  }
+  if (!resp.ok) {
+    var detail = (await resp.text()).slice(0, 300);
+    throw new Error('HTTP ' + resp.status + '：' + detail);
+  }
+  var data = await resp.json();
+  var content = data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+  if (!content) throw new Error('接口返回内容为空');
+  return typeof content === 'string' ? content : JSON.stringify(content);
+}
+
+/* ---------- PPTX 导出（PptxGenJS，原生可编辑元素） ---------- */
+async function exportPptx(d) {
+  var pptx = new PptxGenJS();
+  pptx.layout = 'LAYOUT_WIDE'; // 13.33 x 7.5 英寸
+  var slide = pptx.addSlide();
+  // 标题统一放页面顶部
+  slide.addText(d.title || '未命名', { x: 0.5, y: 0.25, w: 12.33, h: 0.7, fontSize: 22, bold: true, color: '1E293B' });
+
+  if (d.type === 'table') {
+    var head = d.headers.map(function (h) {
+      return { text: String(h), options: { bold: true, fill: { color: 'EFF6FF' }, color: '1E293B' } };
+    });
+    var body = d.rows.map(function (r) { return r.map(function (c) { return { text: String(c) }; }); });
+    slide.addTable([head].concat(body), {
+      x: 0.5, y: 1.2, w: 12.33, fontSize: 12, valign: 'middle', autoPage: true,
+      border: { type: 'solid', pt: 1, color: 'CBD5E1' }
+    });
+  } else if (d.type === 'chart') {
+    var ct = pptx.ChartType[d.chartType] || pptx.ChartType.bar;
+    // 原生可编辑图表：饼图只用第一个系列
+    var chartData = d.chartType === 'pie'
+      ? [{ name: (d.series[0] && d.series[0].name) || d.title, labels: d.categories, values: d.series[0] ? d.series[0].values : [] }]
+      : d.series.map(function (s) { return { name: s.name, labels: d.categories, values: s.values }; });
+    slide.addChart(ct, chartData, { x: 0.8, y: 1.3, w: 11.7, h: 5.6, showLegend: true, legendPos: 'b' });
+  } else { // flow：roundRect 节点 + 带箭头直线 + 文字
+    var X = function (p) { return 0.5 + p / 100 * 12.33; };
+    var Y = function (p) { return 1.3 + p / 100 * 5.6; };
+    var NW = 1.9, NH = 0.72, hw = NW / 2, hh = NH / 2;
+    var pos = {};
+    d.nodes.forEach(function (n) { pos[n.id] = { x: X(n.x), y: Y(n.y) }; });
+    d.edges.forEach(function (e) {
+      var a = pos[e.from], b = pos[e.to];
+      if (!a || !b) return;
+      var t = trimEnds(a.x, a.y, b.x, b.y, hw, hh, hw, hh);
+      // pptxgenjs 直线用外接框 + 翻转表达方向
+      slide.addShape(pptx.ShapeType.line, {
+        x: Math.min(t[0], t[2]), y: Math.min(t[1], t[3]),
+        w: Math.abs(t[2] - t[0]) || 0.001, h: Math.abs(t[3] - t[1]) || 0.001,
+        flipH: t[2] < t[0], flipV: t[3] < t[1],
+        line: { color: '64748B', width: 1.5, endArrowType: 'triangle', dashType: e.style === 'dashed' ? 'dash' : 'solid' }
+      });
+      if (e.label) {
+        slide.addText(e.label, { x: (t[0] + t[2]) / 2 - 0.6, y: (t[1] + t[3]) / 2 - 0.32, w: 1.2, h: 0.28,
+          fontSize: 10, align: 'center', color: '475569' });
+      }
+    });
+    d.nodes.forEach(function (n) {
+      var c = pos[n.id];
+      slide.addText(n.label, {
+        shape: pptx.ShapeType.roundRect, x: c.x - hw, y: c.y - hh, w: NW, h: NH,
+        fill: { color: 'EFF6FF' }, line: { color: '3B82F6', width: 1.5 },
+        align: 'center', valign: 'middle', fontSize: 12, color: '1E293B', rectRadius: 0.08
+      });
+    });
+  }
+  await pptx.writeFile({ fileName: 'converted.pptx' });
+}
+
+/* ---------- Node 环境导出纯函数用于 sanity check；浏览器环境启动页面 ---------- */
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    MOCK: MOCK, TYPE_PROMPTS: TYPE_PROMPTS,
+    escapeHtml: escapeHtml, setByPath: setByPath,
+    extractJson: extractJson, normalizeData: normalizeData,
+    renderSvg: renderSvg, renderTableSvg: renderTableSvg,
+    renderChartSvg: renderChartSvg, renderFlowSvg: renderFlowSvg,
+    pieSlicePath: pieSlicePath, trimEnds: trimEnds,
+    exportPptx: exportPptx
+  };
+} else {
+  initApp();
+}
+
+/* ---------- 页面交互逻辑 ---------- */
+function initApp() {
+  var $ = function (id) { return document.getElementById(id); };
+  var baseUrlEl = $('baseUrl'), apiKeyEl = $('apiKey'), modelEl = $('modelName'), mockEl = $('mockMode');
+  var dropZone = $('dropZone'), fileInput = $('fileInput'), previewImg = $('previewImg'), dropText = $('dropText');
+  var convertBtn = $('convertBtn'), statusBox = $('statusBox');
+  var resultCard = $('resultCard'), jsonPre = $('jsonPre'), svgBox = $('svgBox');
+  var rawBox = $('rawBox'), rawPre = $('rawPre'), exportBtn = $('exportBtn'), typeRow = $('typeRow');
+
+  var imageDataUrl = null;   // 当前图片的 base64 data URL
+  var currentData = null;    // 当前结构化数据（导出用它）
+  var busy = false;
+
+  /* ----- 设置持久化：Key / BaseURL / 模型名存 localStorage ----- */
+  ['img2ppt_baseUrl', 'img2ppt_apiKey', 'img2ppt_model'].forEach(function (k, i) {
+    var el = [baseUrlEl, apiKeyEl, modelEl][i];
+    try {
+      var saved = localStorage.getItem(k);
+      if (saved) el.value = saved;
+      el.addEventListener('change', function () { localStorage.setItem(k, el.value); });
+    } catch (e) { /* 隐私模式等场景下静默降级 */ }
+  });
+
+  /* ----- 类型选择高亮 ----- */
+  typeRow.addEventListener('change', function () {
+    typeRow.querySelectorAll('label').forEach(function (lb) {
+      lb.classList.toggle('checked', lb.querySelector('input').checked);
+    });
+  });
+  function selectedType() {
+    return (typeRow.querySelector('input:checked') || {}).value || 'auto';
+  }
+
+  /* ----- 上传：点击 + 拖拽 ----- */
+  dropZone.addEventListener('click', function () { fileInput.click(); });
+  fileInput.addEventListener('change', function () { loadFile(fileInput.files[0]); });
+  ['dragenter', 'dragover'].forEach(function (ev) {
+    dropZone.addEventListener(ev, function (e) { e.preventDefault(); dropZone.classList.add('dragover'); });
+  });
+  ['dragleave', 'drop'].forEach(function (ev) {
+    dropZone.addEventListener(ev, function (e) { e.preventDefault(); dropZone.classList.remove('dragover'); });
+  });
+  dropZone.addEventListener('drop', function (e) {
+    var f = e.dataTransfer.files && e.dataTransfer.files[0];
+    loadFile(f);
+  });
+  function loadFile(f) {
+    if (!f) return;
+    if (!/^image\//.test(f.type)) { setStatus('请选择图片文件。', 'err'); return; }
+    var reader = new FileReader();
+    reader.onload = function () {
+      imageDataUrl = reader.result;
+      previewImg.src = imageDataUrl;
+      previewImg.classList.remove('hidden');
+      dropText.textContent = '已选择：' + f.name + '（点击可重新选择）';
+      setStatus('', '');
+    };
+    reader.readAsDataURL(f);
+  }
+
+  function setStatus(msg, kind) {
+    statusBox.className = kind || '';
+    statusBox.innerHTML = msg || '';
+  }
+
+  /* ----- 渲染结果：标题（HTML 可编辑）+ SVG ----- */
+  function renderResult(d) {
+    currentData = d;
+    jsonPre.textContent = JSON.stringify(d, null, 2);
+    svgBox.innerHTML =
+      '<div class="title-ed" contenteditable="true" data-path="title">' + escapeHtml(d.title) + '</div>' +
+      renderSvg(d);
+    svgBox.classList.remove('hidden');
+    exportBtn.classList.remove('hidden');
+    rawBox.classList.add('hidden');
+  }
+  // contenteditable 编辑 → 反向写入数据并同步 JSON 预览（事件委托）
+  svgBox.addEventListener('input', function (e) {
+    var path = e.target && e.target.getAttribute && e.target.getAttribute('data-path');
+    if (!path || !currentData) return;
+    setByPath(currentData, path, e.target.innerText.trim());
+    jsonPre.textContent = JSON.stringify(currentData, null, 2);
+  });
+
+  /* ----- 开始转换 ----- */
+  convertBtn.addEventListener('click', async function () {
+    if (busy) return;
+    var type = selectedType();
+    if (mockEl.checked) {
+      // Mock 模式：不调 API，直接返回内置示例（自动判断时给表格示例）
+      renderResult(normalizeData(clone(MOCK[type === 'auto' ? 'table' : type])));
+      resultCard.classList.remove('hidden');
+      resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setStatus('已使用模拟数据生成结果。', 'info');
+      return;
+    }
+    if (!apiKeyEl.value.trim()) { setStatus('请先填写 API Key，或开启「使用模拟数据测试」。', 'err'); return; }
+    if (!imageDataUrl) { setStatus('请先上传图片。', 'err'); return; }
+
+    busy = true;
+    convertBtn.disabled = true;
+    setStatus('<span class="spinner"></span>正在调用大模型解析图片，请稍候…', 'info');
+    try {
+      var cfg = { baseUrl: baseUrlEl.value.trim(), apiKey: apiKeyEl.value.trim(), model: modelEl.value.trim() || 'qwen-vl-max' };
+      var raw = await callModel(cfg, TYPE_PROMPTS[type] || TYPE_PROMPTS.auto, imageDataUrl);
+      var data;
+      try {
+        data = normalizeData(extractJson(raw));
+      } catch (parseErr) {
+        // 模型没按约定输出 JSON：展示原文，方便用户排查
+        resultCard.classList.remove('hidden');
+        rawPre.textContent = raw;
+        rawBox.classList.remove('hidden');
+        svgBox.classList.add('hidden');
+        exportBtn.classList.add('hidden');
+        setStatus('解析失败：' + parseErr.message + '。可重试，或手动指定图片类型。', 'err');
+        return;
+      }
+      renderResult(data);
+      resultCard.classList.remove('hidden');
+      resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setStatus('转换完成，可直接点击文字编辑，确认后导出。', 'info');
+    } catch (err) {
+      // 网络/鉴权/CORS 错误提示
+      setStatus('请求失败：' + err.message +
+        '\n请检查：1) API Key 是否正确且有额度；2) 模型名是否可用；3) 是否被浏览器 CORS 拦截' +
+        '（若控制台报 CORS 错误，说明该接口不允许浏览器直连，可在 Base URL 填自建代理地址）。', 'err');
+    } finally {
+      busy = false;
+      convertBtn.disabled = false;
+    }
+  });
+
+  /* ----- 导出 PPTX ----- */
+  exportBtn.addEventListener('click', async function () {
+    if (!currentData) return;
+    if (typeof PptxGenJS === 'undefined') { setStatus('PptxGenJS 加载失败（CDN 不可达），请检查网络后刷新。', 'err'); return; }
+    exportBtn.disabled = true;
+    try {
+      await exportPptx(currentData);
+      setStatus('已导出 converted.pptx', 'info');
+    } catch (err) {
+      setStatus('导出失败：' + err.message, 'err');
+    } finally {
+      exportBtn.disabled = false;
+    }
+  });
+}
+</script>
+</body>
+</html>

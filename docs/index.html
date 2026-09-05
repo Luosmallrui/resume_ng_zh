@@ -88,6 +88,25 @@
   ul.plain li::before { content: "·"; position: absolute; left: 2px; color: var(--accent); font-weight: 700; }
   ul.plain li b { color: var(--ink); }
 
+  /* Publication card (Selected Work style) */
+  .pubcard {
+    display: flex; gap: 24px; align-items: flex-start;
+    border: 1px solid var(--line); border-radius: 10px;
+    background: #fff; padding: 18px;
+  }
+  .pubcard img {
+    width: 200px; border-radius: 6px; border: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  .pubcard .ptitle { font-weight: 600; font-size: 15.5px; line-height: 1.45; }
+  .pubcard .authors { font-size: 13.5px; color: var(--soft); margin-top: 5px; }
+  .pubcard .authors b { color: var(--ink); }
+  .pubcard .venue { font-size: 13px; color: var(--accent); font-weight: 600; margin-top: 2px; }
+  .pubcard .pdesc {
+    font-size: 13.5px; color: var(--soft); font-style: italic;
+    margin-top: 8px; line-height: 1.6;
+  }
+
   footer {
     grid-column: 1 / -1;
     border-top: 1px solid var(--line);
@@ -100,6 +119,8 @@
     .page { grid-template-columns: 1fr; gap: 12px; padding: 32px 22px 48px; }
     .sidebar .links { border-top: none; padding-top: 10px; }
     .work .head .when { float: none; display: block; }
+    .pubcard { flex-direction: column; }
+    .pubcard img { width: 100%; }
   }
 </style>
 </head>
@@ -156,10 +177,13 @@
     </div>
 
     <h2>Publication</h2>
-    <div class="work">
-      <div class="head"><a href="#">FedLing: Linguistic-Structure-Aware Federated Learning for Fair Multilingual LLM Adaptation</a><span class="when">EMNLP 2026 Findings</span></div>
-      <div class="desc">
-        A typology-aware federated learning framework that routes LoRA update subspaces across <span class="m">40 languages</span>, improving low-resource multilingual adaptation while reducing upload cost. I contributed experimental data analysis, robustness studies and communication-cost accounting.
+    <div class="pubcard">
+      <img src="fedling_thumb.png" alt="FedLing framework figure">
+      <div>
+        <div class="ptitle">FedLing: Linguistic-Structure-Aware Federated Learning for Fair Multilingual LLM Adaptation</div>
+        <div class="authors">XiaoRui Luo, Hongbo Yin, <b>Ziyu Chen</b>, Yin Zhang</div>
+        <div class="venue">EMNLP 2026 Findings</div>
+        <div class="pdesc">A typology-aware federated learning framework that routes LoRA update subspaces across 40 languages, improving low-resource multilingual adaptation while reducing upload cost. I contributed experimental data analysis, robustness studies and communication-cost accounting.</div>
       </div>
     </div>
 

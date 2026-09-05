@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yiwen Wu — Ph.D. Candidate, UESTC</title>
+<meta name="description" content="Yiwen Wu — Ph.D. candidate in Information & Communication Engineering at UESTC. Digital twin networks, LLM/VLM benchmarking, edge intelligence, and LLM agent systems.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1d1b18;
+    --soft: #55514a;
+    --faint: #9a948a;
+    --line: #e6e2da;
+    --link: #2456a6;
+    --accent: #a2542a;
+    --bg: #faf8f4;
+    --card: #ffffff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.7;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--link); text-decoration: none; }
+  a:hover { color: var(--accent); }
+
+  .page {
+    max-width: 1020px;
+    margin: 0 auto;
+    padding: 64px 36px 72px;
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 56px;
+  }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar { position: sticky; top: 56px; align-self: start; }
+  .sidebar .eyebrow {
+    font-size: 11px; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600; margin-bottom: 10px;
+  }
+  .sidebar h1 {
+    font-family: "Fraunces", Georgia, serif;
+    font-size: 40px;
+    font-weight: 500;
+    letter-spacing: .01em;
+    line-height: 1.1;
+    margin-bottom: 10px;
+  }
+  .sidebar h1::after { content: "."; color: var(--accent); }
+  .sidebar .title { color: var(--soft); font-size: 14px; margin-bottom: 3px; }
+  .sidebar .affil { color: var(--faint); font-size: 13px; margin-bottom: 26px; }
+  .sidebar .links { list-style: none; border-top: 2px solid var(--ink); padding-top: 18px; }
+  .sidebar .links li { margin-bottom: 9px; font-size: 14px; }
+  .sidebar .links a { color: var(--ink); border-bottom: 1px solid transparent; transition: border-color .15s ease, color .15s ease; }
+  .sidebar .links a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+  .sidebar .links li::before { content: "→"; color: var(--accent); margin-right: 9px; font-size: 12px; }
+  .sidebar .note { margin-top: 26px; font-size: 12.5px; color: var(--faint); line-height: 1.65; }
+
+  /* ---------- Main ---------- */
+  h2 {
+    font-family: "Fraunces", Georgia, serif;
+    font-size: 23px;
+    font-weight: 500;
+    margin: 44px 0 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+    letter-spacing: .01em;
+  }
+  h2::after {
+    content: "";
+    position: absolute; left: 0; bottom: -1px;
+    width: 48px; height: 2px;
+    background: var(--accent);
+  }
+  h2:first-child { margin-top: 0; }
+  p.bio { color: var(--ink); margin-bottom: 13px; }
+  p.bio b { font-weight: 600; }
+
+  .work { margin-bottom: 22px; }
+  .work .head { font-weight: 600; font-size: 15px; }
+  .work .head .role { font-weight: 400; color: var(--soft); }
+  .work .head .when { float: right; font-weight: 400; color: var(--faint); font-size: 13px; font-variant-numeric: tabular-nums; }
+  .work .desc { color: var(--soft); font-size: 14px; margin-top: 4px; }
+  .work .desc b { color: var(--ink); font-weight: 600; }
+  .work .desc .m { color: var(--accent); font-weight: 600; }
+
+  ul.plain { list-style: none; }
+  ul.plain li { margin-bottom: 7px; padding-left: 18px; position: relative; color: var(--soft); font-size: 14px; }
+  ul.plain li::before { content: ""; position: absolute; left: 2px; top: .68em; width: 6px; height: 2px; background: var(--accent); }
+  ul.plain li b { color: var(--ink); }
+
+  /* ---------- Publications ---------- */
+  .pub {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 12px;
+    transition: box-shadow .18s ease, transform .18s ease;
+  }
+  .pub:hover { box-shadow: 0 4px 18px rgba(29,27,24,.07); transform: translateY(-1px); }
+  .pub .tag { color: var(--accent); font-weight: 600; font-size: 13px; margin-right: 8px; font-variant-numeric: tabular-nums; }
+  .pub .cite { color: var(--ink); font-size: 14.5px; }
+  .pub .badges { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .badge {
+    font-size: 11.5px; font-weight: 500; letter-spacing: .02em;
+    color: var(--accent);
+    background: rgba(162,84,42,.08);
+    border: 1px solid rgba(162,84,42,.22);
+    border-radius: 999px;
+    padding: 2px 10px;
+  }
+  .badge.dim { color: var(--soft); background: rgba(29,27,24,.04); border-color: var(--line); }
+
+  /* ---------- Timeline (education) ---------- */
+  .timeline { list-style: none; }
+  .timeline li { position: relative; padding-left: 24px; margin-bottom: 18px; }
+  .timeline li::before {
+    content: ""; position: absolute; left: 0; top: 7px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--bg); border: 2px solid var(--accent);
+  }
+  .timeline li::after {
+    content: ""; position: absolute; left: 4px; top: 19px; bottom: -14px;
+    width: 1px; background: var(--line);
+  }
+  .timeline li:last-child::after { display: none; }
+  .timeline .deg { font-weight: 600; font-size: 15px; }
+  .timeline .deg .when { float: right; font-weight: 400; color: var(--faint); font-size: 13px; font-variant-numeric: tabular-nums; }
+  .timeline .school { color: var(--soft); font-size: 14px; }
+  .timeline .sub { color: var(--faint); font-size: 13px; margin-top: 2px; }
+
+  footer {
+    grid-column: 1 / -1;
+    border-top: 1px solid var(--line);
+    margin-top: 24px; padding-top: 18px;
+    font-size: 12.5px; color: var(--faint);
+    display: flex; justify-content: space-between;
+  }
+
+  @media (max-width: 760px) {
+    .page { grid-template-columns: 1fr; gap: 16px; padding: 40px 22px 56px; }
+    .sidebar { position: static; }
+    .sidebar .links { border-top: none; padding-top: 12px; }
+    .work .head .when, .timeline .deg .when { float: none; display: block; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <aside class="sidebar">
+    <div class="eyebrow">Ph.D. Candidate · 2026</div>
+    <h1>Yiwen Wu</h1>
+    <div class="title">Information &amp; Communication Engineering</div>
+    <div class="affil">UESTC, Chengdu<br>Visiting Scholar, University of Essex</div>
+    <ul class="links">
+      <li><a href="mailto:yiwenwu@ieee.org">yiwenwu@ieee.org</a></li>
+      <li><a href="Yiwen_Wu_Resume_CN.pdf">Résumé (PDF, 中文)</a></li>
+      <li><a href="tel:+8613678076335">+86 136 7807 6335</a></li>
+      <li><a href="https://yiwenwu.me">yiwenwu.me</a></li>
+    </ul>
+    <div class="note">Based in Chengdu, China. Graduating June 2026 — open to research &amp; engineering opportunities.</div>
+  </aside>
+
+  <main>
+    <h2>About</h2>
+    <p class="bio">
+      I am a Ph.D. candidate in Information &amp; Communication Engineering at the University of Electronic Science and Technology of China (UESTC), advised by <b>Prof. Yan Zhang</b> (Member of Academia Europaea, the Royal Norwegian Society of Sciences and Letters, and the Norwegian Academy of Technological Sciences). From 2024 to 2025 I was a visiting scholar at the <b>University of Essex</b>, UK, funded by the China Scholarship Council.
+    </p>
+    <p class="bio">
+      My work spans <b>digital twin networks, LLM/VLM benchmarking, deep reinforcement learning, and LLM agent systems</b>. I have published two first-author papers in CAS Q1 journals — my IEEE Internet of Things Journal survey on digital twin networks is both an <b>ESI Highly Cited Paper</b> and an <b>ESI Hot Paper</b> with <b>1,000+ citations</b> — and I hold one granted Chinese invention patent. I also served as the student lead of a Huawei joint research project, coordinating a seven-person team to deliver a closed-loop digital twin system for edge networks.
+    </p>
+
+    <h2>Education</h2>
+    <ul class="timeline">
+      <li>
+        <div class="deg">Ph.D., Information &amp; Communication Engineering <span class="when">2020.09 — 2026.06</span></div>
+        <div class="school">University of Electronic Science and Technology of China (UESTC)</div>
+        <div class="sub">Advisor: Prof. Yan Zhang — Member of Academia Europaea; Royal Norwegian Society of Sciences and Letters; Norwegian Academy of Technological Sciences</div>
+      </li>
+      <li>
+        <div class="deg">Visiting Scholar, funded by China Scholarship Council <span class="when">2024.01 — 2025.01</span></div>
+        <div class="school">University of Essex, United Kingdom</div>
+      </li>
+      <li>
+        <div class="deg">M.Sc., Information &amp; Communication Engineering <span class="when">2019.09 — 2020.06</span></div>
+        <div class="school">University of Electronic Science and Technology of China (UESTC)</div>
+      </li>
+      <li>
+        <div class="deg">B.Eng., Communication Engineering <span class="when">2015.09 — 2019.06</span></div>
+        <div class="school">Southwest Minzu University</div>
+      </li>
+    </ul>
+
+    <h2>Selected Publications &amp; Patents</h2>
+
+    <div class="pub">
+      <div class="cite"><span class="tag">[J1]</span><b>Yiwen Wu</b>, et al., "Digital Twin Networks: A Survey," <i>IEEE Internet of Things Journal</i>, 2021.</div>
+      <div class="badges">
+        <span class="badge">First author</span>
+        <span class="badge">ESI Highly Cited</span>
+        <span class="badge">ESI Hot Paper</span>
+        <span class="badge">1,000+ citations</span>
+        <span class="badge dim">CAS Q1 · IF 10.238</span>
+      </div>
+    </div>
+
+    <div class="pub">
+      <div class="cite"><span class="tag">[J2]</span><b>Yiwen Wu</b>, et al., "Embodied Intelligence-Based Hybrid Edge Computing Networks for Scalable Task Execution in Industrial IoT," <i>Journal of Industrial Information Integration</i>, 2025.</div>
+      <div class="badges">
+        <span class="badge">First author</span>
+        <span class="badge dim">CAS Q1 · IF 11.6</span>
+      </div>
+    </div>
+
+    <div class="pub">
+      <div class="cite"><span class="tag">[J3]</span>D. Pei, <b>Yiwen Wu</b>, et al., "Methodology and Benchmark for Automated Driving Theory Test of Large Language Models," <i>IEEE Transactions on Intelligent Transportation Systems</i>, 2025.</div>
+      <div class="badges">
+        <span class="badge">Corresponding author</span>
+        <span class="badge dim">CAS Q2 · IF 8.4</span>
+      </div>
+    </div>
+
+    <div class="pub">
+      <div class="cite">Further work: two first-author papers at <b>IEEE ICCC 2025</b>; papers at <b>IEEE INFOCOM Workshops 2020</b> (60+ citations) and <b>IEEE WCNCW 2020</b>; one <b>granted Chinese invention patent</b>.</div>
+    </div>
+
+    <h2>Projects</h2>
+
+    <div class="work">
+      <div class="head">muxdev <span class="role">— A local LLM agent harness for multi-model coding CLIs</span><span class="when">2026.02 — 2026.08</span></div>
+      <div class="desc">
+        Python · Typer · Rich · SQLite · PTY · tmux · Git Worktree · MCP (JSON-RPC) · RAG · LangGraph · pytest. Designed a unified harness that onboards heterogeneous coding CLIs (Codex, Claude Code, Qwen, Kimi) through provider adapters and PTY management — covering session lifecycle, capability probing, output-event parsing and session recovery. Built two execution modes (Direct / Orchestrated) with an assignment DAG for multi-agent decomposition, plus checkpoint/retry for durable, resumable runs. Integrated local RAG, conversation memory, MCP and skill mechanisms; isolated code changes in Git worktrees producing verifiable changesets; and implemented approvals, shell policies, secret protection, rollback and end-to-end observability (SQLite, transcripts, activity timeline).
+      </div>
+    </div>
+
+    <div class="work">
+      <div class="head">Huawei Joint Research Project <span class="role">— Real-time high-fidelity digital twin for edge networks · Student Lead</span><span class="when">2022.04 — 2024.04</span></div>
+      <div class="desc">
+        Python · PyTorch · time-series forecasting (LSTM / Informer) · deep RL (TD3) · network simulation. Led a <span class="m">seven-person team</span> building a closed-loop "sensing → prediction → twin modeling → decision" system for multi-base-station edge networks. Designed Bi-LSTM-Attention and MHPA-Informer models for joint multi-interface traffic forecasting, cutting <span class="m">MSE by 20%</span> over baselines; fed forecasts into a TD3 agent jointly optimizing user association and transmit power in MU-MIMO, turning scheduling from reactive to foresighted. Delivered real network-management data ingestion, algorithm serving, and a "mapping → policy → evaluation" validation loop.
+      </div>
+    </div>
+
+    <div class="work">
+      <div class="head">Horizon Europe MSCA Project <span class="role">— Benchmarking LLM capabilities for automated driving</span><span class="when">2024.01 — 2025.01</span></div>
+      <div class="desc">
+        Python · LLM/VLM APIs · prompt engineering · structured-output parsing · multimodal evaluation. Modeled on the UK DVSA driving theory test, built a benchmark of <span class="m">726</span> theory questions (617 text + 109 image) and <span class="m">54</span> hazard-perception videos with frame-level hazard labels and a time-sensitive scoring scheme. Ran batched inference across mainstream LLMs/VLMs with unified system/user prompts and structured parsing, evaluating accuracy, F1, event-level IoU, throughput, latency and token cost. GPT-4o reached <span class="m">88.21%</span> overall on driving theory, while hazard perception remains a clear bottleneck for current models.
+      </div>
+    </div>
+
+    <h2>Honors &amp; Awards</h2>
+    <ul class="plain">
+      <li><b>IEEE VTS Daniel E. Noble Fellowship Award</b> (doctoral)</li>
+      <li><b>China Scholarship Council (CSC) Scholarship</b> (doctoral)</li>
+      <li>First-Class Scholarship, UESTC (master's &amp; doctoral)</li>
+      <li><b>National Scholarship</b> (top 0.2% nationwide) and multiple first-class scholarships (undergraduate)</li>
+      <li><b>Meritorious Winner</b>, Mathematical Contest in Modeling (MCM) (undergraduate)</li>
+    </ul>
+
+    <h2>Highlights</h2>
+    <ul class="plain">
+      <li><b>AI algorithms &amp; systems:</b> LLM/VLM, deep RL, time-series forecasting and model evaluation — from model access and algorithm design to system integration and experimental assessment</li>
+      <li><b>LLM agent engineering:</b> multi-agent orchestration, RAG, MCP, context management, tool integration, run-state management, failure recovery, sandboxed execution and result verification</li>
+      <li><b>Project leadership:</b> student lead of a Huawei joint project — team coordination, technical design, cross-module collaboration and delivery from prototype to production</li>
+      <li><b>International collaboration:</b> CET-6; one-year visiting research at the University of Essex; multiple talks at international conferences in English</li>
+    </ul>
+
+    <footer>
+      <span>© 2026 Yiwen Wu</span>
+      <span>Last updated: Sep 2026</span>
+    </footer>
+  </main>
+
+</div>
+</body>
+</html>
