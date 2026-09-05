@@ -108,6 +108,10 @@
     transition: box-shadow .18s ease, transform .18s ease;
   }
   .pub:hover { box-shadow: 0 4px 18px rgba(29,27,24,.07); transform: translateY(-1px); }
+  .pub .thumb {
+    float: left; width: 170px; margin: 2px 16px 6px 0;
+    border: 1px solid var(--line); border-radius: 6px;
+  }
   .pub .tag { color: var(--accent); font-weight: 600; font-size: 13px; margin-right: 8px; font-variant-numeric: tabular-nums; }
   .pub .cite { color: var(--ink); font-size: 14.5px; }
   .pub .badges { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; }
@@ -224,6 +228,7 @@
     </div>
 
     <div class="pub">
+      <img class="thumb" src="paper_j3.png" alt="J3 paper figure">
       <div class="cite"><span class="tag">[J3]</span>D. Pei, <b>Yiwen Wu</b>, et al., "Methodology and Benchmark for Automated Driving Theory Test of Large Language Models," <i>IEEE Transactions on Intelligent Transportation Systems</i>, 2025.</div>
       <div class="badges">
         <span class="badge">Corresponding author</span>
